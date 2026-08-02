@@ -54,20 +54,17 @@
 </head>
 <body>
   <main class="card">
-    <h1 id="title">YAY 💖</h1>
+    <h1 id="title">💖</h1>
     <p id="line">can't wait to see u 💐</p>
     <img src="IMG_6171.jpg" alt="Flowers for you" class="gift-img" />
   </main>
 
   <script>
     const params = new URLSearchParams(location.search);
-    const name = params.get("name");
     const date = params.get("date");
 
-    const title = document.getElementById("title");
     const line = document.getElementById("line");
 
-    if (name) title.textContent = `${name} 💖`;
     if (date) line.textContent = `can't wait to see u on ${date} 💐`;
   </script>
 </body>

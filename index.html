@@ -157,6 +157,29 @@
     /* Date picker step */
     .hidden { display: none; }
 
+    #introStep {
+      padding: 30px 10px;
+      cursor: pointer;
+    }
+
+    .intro-text {
+      font-family: "Pacifico", cursive;
+      font-style: italic;
+      color: var(--romantic);
+      font-size: clamp(24px, 4.5vw, 36px);
+      line-height: 1.3;
+      opacity: 0;
+      transform: translateY(18px) scale(.96);
+      animation: introPopIn 1.2s ease forwards;
+    }
+
+    @keyframes introPopIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     .date-grid {
       display: flex;
       flex-wrap: wrap;
@@ -226,8 +249,12 @@
   <main class="card" aria-live="polite">
     <div class="hearts"></div>
 
-    <div id="askStep">
-      <h1 id="question">may i go on a date with you, malaz? 🌹</h1>
+    <div id="introStep">
+      <p class="intro-text">malaz u mean alot to me so</p>
+    </div>
+
+    <div id="askStep" class="hidden">
+      <h1 id="question">may i go on a date with you? 🌹</h1>
 
       <div class="cat-wrap" aria-hidden="true">
         <img src="cat.jpeg" alt="Cute cat" class="cat-img">
@@ -264,8 +291,21 @@
     const params = new URLSearchParams(location.search);
     const name = params.get("name") || "malaz";
 
+    const introStep = document.getElementById("introStep");
     const askStep = document.getElementById("askStep");
     const dateStep = document.getElementById("dateStep");
+
+    function showAskStep() {
+      if (introStep.classList.contains("hidden")) return;
+      introStep.classList.add("hidden");
+      askStep.classList.remove("hidden");
+    }
+
+    const introTimer = setTimeout(showAskStep, 2500);
+    introStep.addEventListener("click", () => {
+      clearTimeout(introTimer);
+      showAskStep();
+    });
     const playArea = document.getElementById("playArea");
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
