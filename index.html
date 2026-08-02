@@ -63,6 +63,24 @@
       transform: rotate(-2deg);
     }
 
+    .cat-wrap {
+      display: grid;
+      place-items: center;
+      margin: 4px auto 14px;
+    }
+
+    .cat-img {
+      width: min(320px, 70vw);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 14px 18px rgba(0,0,0,.12));
+      transform: rotate(-1.5deg);
+      border-radius: 18px;
+      user-select: none;
+      pointer-events: none;
+    }
+
     .bubble {
       position: relative;
       margin: 0 auto 18px;
@@ -209,7 +227,11 @@
     <div class="hearts"></div>
 
     <div id="askStep">
-      <h1 id="question">can i go on a date with you, malaz? 🌹</h1>
+      <h1 id="question">may i go on a date with you, malaz? 🌹</h1>
+
+      <div class="cat-wrap" aria-hidden="true">
+        <img src="cat.jpeg" alt="Cute cat" class="cat-img">
+      </div>
 
       <div class="bubble">
         💬 psst… good luck trying to click <b>NO</b> 👀
@@ -289,10 +311,28 @@
       noBtn.style.transform = "none";
     }
 
+    const noMessages = [
+      "try harder 😏",
+      "so close 😭",
+      "nahhh",
+      "u sure??",
+      "not happening 🙂",
+      "nice try 😼",
+      "keep trying 👀",
+      "almost… jk 💀"
+    ];
+    let noIndex = 0;
+
+    function setNoText() {
+      noBtn.textContent = noMessages[noIndex % noMessages.length];
+      noIndex++;
+    }
+
     function dodge(e) {
       const px = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
       const py = e.clientY ?? (e.touches && e.touches[0]?.clientY) ?? 0;
       moveNoButtonAwayFromPointer(px, py);
+      setNoText();
     }
 
     noBtn.addEventListener("pointermove", dodge);
