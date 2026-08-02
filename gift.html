@@ -55,24 +55,20 @@
 <body>
   <main class="card">
     <h1 id="title">YAY 💖</h1>
-    <p id="line">little something for u x</p>
-    <img src="roses.png" alt="A special gift" class="gift-img" />
-    <!-- PUT YOUR GIFT CARD CODE HERE -->
-    
-
-    <div class="hint"> special things for special people 😊 </div>
+    <p id="line">can't wait to see u 💐</p>
+    <img src="IMG_6170.jpg" alt="Flowers for you" class="gift-img" />
   </main>
 
   <script>
     const params = new URLSearchParams(location.search);
     const name = params.get("name");
-    const from = params.get("from");
+    const date = params.get("date");
 
     const title = document.getElementById("title");
     const line = document.getElementById("line");
 
     if (name) title.textContent = `${name} 💖`;
-    if (from) line.textContent = `Here’s your gift — from ${from}:`;
+    if (date) line.textContent = `can't wait to see u on ${date} 💐`;
   </script>
 </body>
 </html>

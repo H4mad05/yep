@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>💌 for u</title>
 
-
   <!-- Curly font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,59 +51,29 @@
     }
 
     h1 {
-     
-  margin: 0 0 16px;
-  font-size: clamp(30px, 4vw, 44px);
-  line-height: 1.15;
-
-  font-family: "Pacifico", cursive; /* 🔴 THIS IS THE KEY */
-  font-weight: 400;
-  font-style: italic;
-
-  color: var(--romantic);
-  text-shadow: 0 6px 18px rgba(225, 29, 72, 0.25);
-
-  display: inline-block;
-  transform: rotate(-2deg);
-}
-
-    
-
-    /* ✅ Curly + sideways subtitle */
-    .sub {
-      margin: 0 0 18px;
-      color: #9f1239;
-      font-size: 20px;
-      min-height: 22px;
-
+      margin: 0 0 16px;
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1.15;
       font-family: "Pacifico", cursive;
+      font-weight: 400;
       font-style: italic;
-
+      color: var(--romantic);
+      text-shadow: 0 6px 18px rgba(225, 29, 72, 0.25);
       display: inline-block;
-      transform: rotate(-4deg);
-      text-shadow: 0 8px 18px rgba(0,0,0,.08);
+      transform: rotate(-2deg);
     }
 
-    .cat-wrap {
-      display: grid;
-      place-items: center;
-      margin: 18px auto 14px;
+    .bubble {
+      position: relative;
+      margin: 0 auto 18px;
+      max-width: 420px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,.92);
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      color: #9f1239;
+      font-size: 15px;
     }
-
-    /* ✅ You used class="cat-img" in HTML, so style that */
-    .cat-img {
-      width: min(320px, 70vw);
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      filter: drop-shadow(0 14px 18px rgba(0,0,0,.12));
-      transform: rotate(-1.5deg);
-      border-radius: 18px;
-      user-select: none;
-      pointer-events: none;
-    }
-
-   
     .bubble::after {
       content: "";
       position: absolute;
@@ -167,6 +136,68 @@
       filter: blur(2px);
     }
 
+    /* Date picker step */
+    .hidden { display: none; }
+
+    .date-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 18px 0;
+    }
+
+    .date-btn {
+      border: 1px solid rgba(225,29,72,.25);
+      background: rgba(255,255,255,.9);
+      color: var(--romantic);
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .08s ease, background .2s ease;
+    }
+    .date-btn:hover { background: #fff; }
+    .date-btn:active { transform: translateY(1px) scale(.98); }
+    .date-btn.selected {
+      background: var(--romantic);
+      color: #fff;
+    }
+
+    .custom-date-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .custom-date-row input[type="text"] {
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.15);
+      font-size: 15px;
+      min-width: 200px;
+    }
+
+    .confirm-btn {
+      background: linear-gradient(180deg, var(--yes), var(--yes2));
+      color: white;
+      border: 0;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .confirm-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
     @media (max-width: 480px) {
       .play-area { height: 190px; }
     }
@@ -177,75 +208,48 @@
   <main class="card" aria-live="polite">
     <div class="hearts"></div>
 
-    <h1 id="question">may i be ur valentines nafisa (my first btw)</h1>
+    <div id="askStep">
+      <h1 id="question">can i go on a date with you, malaz? 🌹</h1>
 
-    <!-- ✅ Default curly text shows even without URL params -->
-   
-    <div class="cat-wrap" aria-hidden="true">
-      <img src="cat.jpeg" alt="Cute cat" class="cat-img">
+      <div class="bubble">
+        💬 psst… good luck trying to click <b>NO</b> 👀
+      </div>
+
+      <div class="play-area" id="playArea">
+        <button class="btn" id="yesBtn" type="button">YES 💖</button>
+        <button class="btn" id="noBtn" type="button">NO</button>
+      </div>
     </div>
 
-    <div class="bubble">
-      💬 psst… if u manage to press <b>NO</b><br>
-      he’ll do that Sudanese dance u wanted 👀🕺🏽
-    </div>
+    <div id="dateStep" class="hidden">
+      <h1 id="dateTitle">pick a day 💌</h1>
+      <div class="date-grid" id="dateGrid">
+        <button class="date-btn" data-date="August 8th">August 8th</button>
+        <button class="date-btn" data-date="August 9th">August 9th</button>
+        <button class="date-btn" data-date="August 10th">August 10th</button>
+        <button class="date-btn" data-date="__custom__">I have another day in mind</button>
+      </div>
 
-    <div class="play-area" id="playArea">
-      <button class="btn" id="yesBtn" type="button">YES 💖</button>
-      <button class="btn" id="noBtn" type="button">NO</button>
+      <div class="custom-date-row hidden" id="customDateRow">
+        <input type="text" id="customDateInput" placeholder="what day works for u?" />
+      </div>
+
+      <button class="confirm-btn" id="confirmDateBtn" disabled>confirm 💖</button>
     </div>
   </main>
 
   <script>
-    // URL params (optional)
     const params = new URLSearchParams(location.search);
-    const q = params.get("q");
-    const name = params.get("name");
-    const from = params.get("from");
+    const name = params.get("name") || "malaz";
 
-    const questionEl = document.getElementById("question");
-    const subtitleEl = document.getElementById("subtitle");
-
-    if (q) questionEl.textContent = q;
-
-    // ✅ If name/from exists, show it; otherwise keep the default curly line already in HTML
-    if (name || from) {
-      const parts = [];
-      if (name) parts.push(name);
-      if (from) parts.push(`from ${from}`);
-      subtitleEl.textContent = parts.join(" — ");
-    }
-
+    const askStep = document.getElementById("askStep");
+    const dateStep = document.getElementById("dateStep");
     const playArea = document.getElementById("playArea");
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
 
-    // Start clean
-    noBtn.textContent = "NO";
-
-    const noMessages = [
-      "rlly? 😐",
-      "bruh 💀",
-      "nahhh",
-      "u sure??",
-      "be fr 😭",
-      "cmonnn 🥺",
-      "nice try 😼",
-      "not happening 🙂"
-    ];
-    let noIndex = 0;
-
     function clamp(n, min, max) {
       return Math.max(min, Math.min(max, n));
-    }
-
-    function setNoText() {
-      if (noIndex === 0) {
-        noBtn.textContent = "NO";
-      } else {
-        noBtn.textContent = `NO — ${noMessages[noIndex % noMessages.length]}`;
-      }
-      noIndex++;
     }
 
     function moveNoButtonAwayFromPointer(pointerX, pointerY) {
@@ -276,7 +280,6 @@
           noBtn.style.left = `${left}px`;
           noBtn.style.top = `${top}px`;
           noBtn.style.transform = "none";
-          setNoText();
           return;
         }
       }
@@ -284,7 +287,6 @@
       noBtn.style.left = `${pad}px`;
       noBtn.style.top = `${pad}px`;
       noBtn.style.transform = "none";
-      setNoText();
     }
 
     function dodge(e) {
@@ -306,18 +308,56 @@
       return false;
     });
 
-    // YES -> gift page
-    yesBtn.addEventListener("click", () => {
-      const next = new URL("gift.html", location.href);
-      if (name) next.searchParams.set("name", name);
-      if (from) next.searchParams.set("from", from);
-      location.href = next.toString();
-    });
-
-    // Initial placement
+    // Initial NO placement
     noBtn.style.left = "50%";
     noBtn.style.top = "78px";
     noBtn.style.transform = "translateX(20%)";
+
+    // YES -> reveal date picker
+    yesBtn.addEventListener("click", () => {
+      askStep.classList.add("hidden");
+      dateStep.classList.remove("hidden");
+    });
+
+    // Date picker
+    const dateGrid = document.getElementById("dateGrid");
+    const customDateRow = document.getElementById("customDateRow");
+    const customDateInput = document.getElementById("customDateInput");
+    const confirmDateBtn = document.getElementById("confirmDateBtn");
+
+    let selectedDate = null;
+
+    dateGrid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".date-btn");
+      if (!btn) return;
+
+      dateGrid.querySelectorAll(".date-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+
+      if (btn.dataset.date === "__custom__") {
+        customDateRow.classList.remove("hidden");
+        customDateInput.focus();
+        selectedDate = customDateInput.value.trim() || null;
+      } else {
+        customDateRow.classList.add("hidden");
+        selectedDate = btn.dataset.date;
+      }
+
+      confirmDateBtn.disabled = !selectedDate;
+    });
+
+    customDateInput.addEventListener("input", () => {
+      selectedDate = customDateInput.value.trim() || null;
+      confirmDateBtn.disabled = !selectedDate;
+    });
+
+    confirmDateBtn.addEventListener("click", () => {
+      if (!selectedDate) return;
+      const next = new URL("gift.html", location.href);
+      next.searchParams.set("name", name);
+      next.searchParams.set("date", selectedDate);
+      location.href = next.toString();
+    });
   </script>
 </body>
 </html>
