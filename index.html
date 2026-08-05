@@ -453,12 +453,15 @@
     });
 
     function notifyDateChoice(date) {
+      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR9q0nIaEU5o8fBcBhF1AVN_5Ug_lJ_Fvetp0FHPa7Tlkq5g/formResponse";
       const formData = new FormData();
       formData.append("entry.1997529094", date);
-      return fetch(
-        "https://docs.google.com/forms/d/e/1FAIpQLScR9q0nIaEU5o8fBcBhF1AVN_5Ug_lJ_Fvetp0FHPa7Tlkq5g/formResponse",
-        { method: "POST", mode: "no-cors", body: formData }
-      ).catch(() => {});
+
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(formUrl, formData);
+      } else {
+        fetch(formUrl, { method: "POST", mode: "no-cors", body: formData, keepalive: true }).catch(() => {});
+      }
     }
 
     confirmDateBtn.addEventListener("click", () => {
