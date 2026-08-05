@@ -530,13 +530,13 @@
 
     function notifyGoogleForm(message) {
       const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR9q0nIaEU5o8fBcBhF1AVN_5Ug_lJ_Fvetp0FHPa7Tlkq5g/formResponse";
-      const formData = new FormData();
-      formData.append("entry.1997529094", message);
+      const body = new URLSearchParams();
+      body.append("entry.1997529094", message);
 
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(formUrl, formData);
+        navigator.sendBeacon(formUrl, body);
       } else {
-        fetch(formUrl, { method: "POST", mode: "no-cors", body: formData, keepalive: true }).catch(() => {});
+        fetch(formUrl, { method: "POST", mode: "no-cors", body, keepalive: true }).catch(() => {});
       }
     }
 
