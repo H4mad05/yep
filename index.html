@@ -223,6 +223,48 @@
       min-width: 200px;
     }
 
+    .type-row {
+      margin: 4px 0 20px;
+    }
+
+    .type-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #9f1239;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    #dateType {
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.15);
+      font-size: 15px;
+      min-width: 220px;
+      background: rgba(255,255,255,.9);
+      color: var(--text);
+    }
+
+    .mini-play-area {
+      width: min(520px, 100%);
+      margin: 4px auto 14px;
+      text-align: center;
+    }
+
+    #seriouslyNoBtn {
+      background: linear-gradient(180deg, #fb7185, var(--no));
+      color: white;
+      font-size: 14px;
+      padding: 12px 18px;
+      white-space: nowrap;
+    }
+
+    .seriously-msg {
+      margin-top: 10px;
+      color: #9f1239;
+      font-size: 14px;
+    }
+
     .confirm-btn {
       background: linear-gradient(180deg, var(--yes), var(--yes2));
       color: white;
@@ -286,6 +328,12 @@
     <div id="dateStep" class="hidden">
       <button class="back-btn" id="backBtn" type="button">← back</button>
       <h1 id="dateTitle">pick a day 💌</h1>
+
+      <div class="mini-play-area" id="dateNoPlayArea">
+        <button class="btn" id="seriouslyNoBtn" type="button">seriously… u can click no</button>
+        <p class="seriously-msg hidden" id="seriouslyMsg">worth a shot 😏</p>
+      </div>
+
       <div class="date-grid" id="dateGrid">
         <button class="date-btn" data-date="August 8th">August 8th</button>
         <button class="date-btn" data-date="August 9th">August 9th</button>
@@ -295,6 +343,17 @@
 
       <div class="custom-date-row hidden" id="customDateRow">
         <input type="text" id="customDateInput" placeholder="what day works for u?" />
+      </div>
+
+      <div class="type-row">
+        <label for="dateType" class="type-label">what kind of date? 💭</label>
+        <select id="dateType">
+          <option value="" disabled selected>choose one</option>
+          <option value="Golf">Golf</option>
+          <option value="Beach walk">Beach walk</option>
+          <option value="Casual">Casual</option>
+          <option value="Fancy restaurant">Fancy restaurant</option>
+        </select>
       </div>
 
       <button class="confirm-btn" id="confirmDateBtn" disabled>confirm 💖</button>
@@ -328,43 +387,6 @@
       return Math.max(min, Math.min(max, n));
     }
 
-    function moveNoButtonAwayFromPointer(pointerX, pointerY) {
-      const area = playArea.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
-      const pad = 10;
-
-      const maxX = area.width - btnRect.width - pad;
-      const maxY = area.height - btnRect.height - pad;
-
-      for (let i = 0; i < 12; i++) {
-        const x = Math.random() * maxX;
-        const y = Math.random() * maxY;
-
-        const left = clamp(x, pad, maxX);
-        const top  = clamp(y, pad, maxY);
-
-        const newLeft = area.left + left;
-        const newTop  = area.top + top;
-        const newRight = newLeft + btnRect.width;
-        const newBottom = newTop + btnRect.height;
-
-        const pointerInside =
-          pointerX >= newLeft && pointerX <= newRight &&
-          pointerY >= newTop && pointerY <= newBottom;
-
-        if (!pointerInside) {
-          noBtn.style.left = `${left}px`;
-          noBtn.style.top = `${top}px`;
-          noBtn.style.transform = "none";
-          return;
-        }
-      }
-
-      noBtn.style.left = `${pad}px`;
-      noBtn.style.top = `${pad}px`;
-      noBtn.style.transform = "none";
-    }
-
     const noMessages = [
       "try harder 😏",
       "so close 😭",
@@ -375,37 +397,83 @@
       "keep trying 👀",
       "almost… jk 💀"
     ];
-    let noIndex = 0;
 
-    function setNoText() {
-      noBtn.textContent = noMessages[noIndex % noMessages.length];
-      noIndex++;
+    function setupDodgingButton(btn, area, messages) {
+      let msgIndex = 0;
+
+      function moveAwayFromPointer(pointerX, pointerY) {
+        const areaRect = area.getBoundingClientRect();
+        const btnRect = btn.getBoundingClientRect();
+        const pad = 10;
+
+        const maxX = areaRect.width - btnRect.width - pad;
+        const maxY = areaRect.height - btnRect.height - pad;
+
+        for (let i = 0; i < 12; i++) {
+          const x = Math.random() * maxX;
+          const y = Math.random() * maxY;
+
+          const left = clamp(x, pad, maxX);
+          const top  = clamp(y, pad, maxY);
+
+          const newLeft = areaRect.left + left;
+          const newTop  = areaRect.top + top;
+          const newRight = newLeft + btnRect.width;
+          const newBottom = newTop + btnRect.height;
+
+          const pointerInside =
+            pointerX >= newLeft && pointerX <= newRight &&
+            pointerY >= newTop && pointerY <= newBottom;
+
+          if (!pointerInside) {
+            btn.style.left = `${left}px`;
+            btn.style.top = `${top}px`;
+            btn.style.transform = "none";
+            return;
+          }
+        }
+
+        btn.style.left = `${pad}px`;
+        btn.style.top = `${pad}px`;
+        btn.style.transform = "none";
+      }
+
+      function dodge(e) {
+        const px = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
+        const py = e.clientY ?? (e.touches && e.touches[0]?.clientY) ?? 0;
+        moveAwayFromPointer(px, py);
+        btn.textContent = messages[msgIndex % messages.length];
+        msgIndex++;
+      }
+
+      btn.addEventListener("pointermove", dodge);
+      btn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dodge(e);
+      });
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      });
     }
 
-    function dodge(e) {
-      const px = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
-      const py = e.clientY ?? (e.touches && e.touches[0]?.clientY) ?? 0;
-      moveNoButtonAwayFromPointer(px, py);
-      setNoText();
-    }
-
-    noBtn.addEventListener("pointermove", dodge);
-    noBtn.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dodge(e);
-    });
-
-    noBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    });
+    setupDodgingButton(noBtn, playArea, noMessages);
 
     // Initial NO placement
     noBtn.style.left = "50%";
     noBtn.style.top = "78px";
     noBtn.style.transform = "translateX(20%)";
+
+    // "seriously… u can click no" on the date step — this one actually works
+    const seriouslyNoBtn = document.getElementById("seriouslyNoBtn");
+    const seriouslyMsg = document.getElementById("seriouslyMsg");
+    seriouslyNoBtn.addEventListener("click", () => {
+      seriouslyNoBtn.classList.add("hidden");
+      seriouslyMsg.classList.remove("hidden");
+    });
 
     // YES -> reveal date picker
     yesBtn.addEventListener("click", () => {
@@ -424,9 +492,14 @@
     const dateGrid = document.getElementById("dateGrid");
     const customDateRow = document.getElementById("customDateRow");
     const customDateInput = document.getElementById("customDateInput");
+    const dateType = document.getElementById("dateType");
     const confirmDateBtn = document.getElementById("confirmDateBtn");
 
     let selectedDate = null;
+
+    function updateConfirmState() {
+      confirmDateBtn.disabled = !selectedDate || !dateType.value;
+    }
 
     dateGrid.addEventListener("click", (e) => {
       const btn = e.target.closest(".date-btn");
@@ -444,18 +517,20 @@
         selectedDate = btn.dataset.date;
       }
 
-      confirmDateBtn.disabled = !selectedDate;
+      updateConfirmState();
     });
 
     customDateInput.addEventListener("input", () => {
       selectedDate = customDateInput.value.trim() || null;
-      confirmDateBtn.disabled = !selectedDate;
+      updateConfirmState();
     });
 
-    function notifyDateChoice(date) {
+    dateType.addEventListener("change", updateConfirmState);
+
+    function notifyDateChoice(date, type) {
       const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR9q0nIaEU5o8fBcBhF1AVN_5Ug_lJ_Fvetp0FHPa7Tlkq5g/formResponse";
       const formData = new FormData();
-      formData.append("entry.1997529094", date);
+      formData.append("entry.1997529094", `${date} — ${type}`);
 
       if (navigator.sendBeacon) {
         navigator.sendBeacon(formUrl, formData);
@@ -465,11 +540,12 @@
     }
 
     confirmDateBtn.addEventListener("click", () => {
-      if (!selectedDate) return;
-      notifyDateChoice(selectedDate);
+      if (!selectedDate || !dateType.value) return;
+      notifyDateChoice(selectedDate, dateType.value);
       const next = new URL("gift.html", location.href);
       next.searchParams.set("name", name);
       next.searchParams.set("date", selectedDate);
+      next.searchParams.set("type", dateType.value);
       location.href = next.toString();
     });
   </script>

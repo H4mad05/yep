@@ -62,10 +62,15 @@
   <script>
     const params = new URLSearchParams(location.search);
     const date = params.get("date");
+    const type = params.get("type");
 
     const line = document.getElementById("line");
 
-    if (date) line.textContent = `can't wait to see u on ${date} 💐`;
+    if (date && type) {
+      line.textContent = `can't wait for our ${type.toLowerCase()} date on ${date} 💐`;
+    } else if (date) {
+      line.textContent = `can't wait to see u on ${date} 💐`;
+    }
   </script>
 </body>
 </html>
