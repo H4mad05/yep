@@ -331,7 +331,7 @@
 
       <div class="mini-play-area" id="dateNoPlayArea">
         <button class="btn" id="seriouslyNoBtn" type="button">seriously… u can click no</button>
-        <p class="seriously-msg hidden" id="seriouslyMsg">worth a shot 😏</p>
+        <p class="seriously-msg hidden" id="seriouslyMsg">worth a shot</p>
       </div>
 
       <div class="date-grid" id="dateGrid">
@@ -473,6 +473,7 @@
     seriouslyNoBtn.addEventListener("click", () => {
       seriouslyNoBtn.classList.add("hidden");
       seriouslyMsg.classList.remove("hidden");
+      notifyGoogleForm("clicked 'seriously... u can click no'");
     });
 
     // YES -> reveal date picker
@@ -527,10 +528,10 @@
 
     dateType.addEventListener("change", updateConfirmState);
 
-    function notifyDateChoice(date, type) {
+    function notifyGoogleForm(message) {
       const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLScR9q0nIaEU5o8fBcBhF1AVN_5Ug_lJ_Fvetp0FHPa7Tlkq5g/formResponse";
       const formData = new FormData();
-      formData.append("entry.1997529094", `${date} — ${type}`);
+      formData.append("entry.1997529094", message);
 
       if (navigator.sendBeacon) {
         navigator.sendBeacon(formUrl, formData);
@@ -541,7 +542,7 @@
 
     confirmDateBtn.addEventListener("click", () => {
       if (!selectedDate || !dateType.value) return;
-      notifyDateChoice(selectedDate, dateType.value);
+      notifyGoogleForm(`${selectedDate} — ${dateType.value}`);
       const next = new URL("gift.html", location.href);
       next.searchParams.set("name", name);
       next.searchParams.set("date", selectedDate);
