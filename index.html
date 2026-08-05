@@ -239,6 +239,19 @@
       cursor: not-allowed;
     }
 
+    .back-btn {
+      display: block;
+      margin: 0 0 12px;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      text-align: left;
+      padding: 4px 0;
+    }
+    .back-btn:hover { color: var(--romantic); }
+
     @media (max-width: 480px) {
       .play-area { height: 190px; }
     }
@@ -271,6 +284,7 @@
     </div>
 
     <div id="dateStep" class="hidden">
+      <button class="back-btn" id="backBtn" type="button">← back</button>
       <h1 id="dateTitle">pick a day 💌</h1>
       <div class="date-grid" id="dateGrid">
         <button class="date-btn" data-date="August 8th">August 8th</button>
@@ -399,6 +413,13 @@
       dateStep.classList.remove("hidden");
     });
 
+    // Back to question
+    const backBtn = document.getElementById("backBtn");
+    backBtn.addEventListener("click", () => {
+      dateStep.classList.add("hidden");
+      askStep.classList.remove("hidden");
+    });
+
     // Date picker
     const dateGrid = document.getElementById("dateGrid");
     const customDateRow = document.getElementById("customDateRow");
@@ -431,8 +452,18 @@
       confirmDateBtn.disabled = !selectedDate;
     });
 
+    function notifyDateChoice(date) {
+      const formData = new FormData();
+      formData.append("entry.1997529094", date);
+      return fetch(
+        "https://docs.google.com/forms/d/e/1FAIpQLScR9q0nIaEU5o8fBcBhF1AVN_5Ug_lJ_Fvetp0FHPa7Tlkq5g/formResponse",
+        { method: "POST", mode: "no-cors", body: formData }
+      ).catch(() => {});
+    }
+
     confirmDateBtn.addEventListener("click", () => {
       if (!selectedDate) return;
+      notifyDateChoice(selectedDate);
       const next = new URL("gift.html", location.href);
       next.searchParams.set("name", name);
       next.searchParams.set("date", selectedDate);
