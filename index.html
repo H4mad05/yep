@@ -364,6 +364,19 @@
   </main>
 
   <script>
+    // Silent visit logging (separate form, no email notifications)
+    (function logVisit() {
+      const visitFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfAVyw3Cor5BlRWtHsiLa6Mq71LA3SdjwLcj_cv2KxkMoKSEw/formResponse";
+      const body = new URLSearchParams();
+      body.append("entry.425961246", new Date().toString());
+
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(visitFormUrl, body);
+      } else {
+        fetch(visitFormUrl, { method: "POST", mode: "no-cors", body, keepalive: true }).catch(() => {});
+      }
+    })();
+
     const params = new URLSearchParams(location.search);
     const name = params.get("name") || "malaz";
 
